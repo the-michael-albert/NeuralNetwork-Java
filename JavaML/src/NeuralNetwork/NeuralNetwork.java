@@ -3,6 +3,8 @@ package NeuralNetwork;
 import NeuralNetwork.Components.Layer;
 import NeuralNetwork.Exceptions.NeuralNetworkException;
 import NeuralNetwork.Tools.NeuralNetworkMathFunctions;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 
@@ -21,10 +23,12 @@ public class NeuralNetwork{
     private NeuralNetworkMathFunctions mathFunctions = new NeuralNetworkMathFunctions();
     private boolean isConnected = false;
 
+    public NeuralNetwork(){}
+
     public NeuralNetwork(int[] networkSize){
         for (int i = 0; i < networkSize.length; i++) {
             //add network layer
-            neuralNetwork.add(new Layer(networkSize[i]));
+            neuralNetwork.add(new Layer(networkSize[i], "" + i));
 
             //add connection
             if(i > 0){
@@ -160,6 +164,11 @@ public class NeuralNetwork{
         return neuralNetwork.size();
     }
 
+    public void setNetworkLayerSize(int n){
+        //do nothing
+    }
+
+
     public int getNumberOfNeurons(int layer){
         if(layer >= 0 && layer < getNetworkLayerSize()){
             return neuralNetwork.get(layer).getNumberOfNeurons();
@@ -189,5 +198,59 @@ public class NeuralNetwork{
     public Double getConnection(int layer, int neuron, int connection){
         return neuralNetwork.get(layer).getNeuron(neuron).getConnection(connection);
     }
+
+    public ArrayList<Layer> getNeuralNetwork() {
+        return neuralNetwork;
+    }
+
+    public void setNeuralNetwork(ArrayList<Layer> neuralNetwork) {
+        this.neuralNetwork = neuralNetwork;
+    }
+
+    public ArrayList<Double> getNeuralNetworkBias() {
+        return neuralNetworkBias;
+    }
+
+    public void setNeuralNetworkBias(ArrayList<Double> neuralNetworkBias) {
+        this.neuralNetworkBias = neuralNetworkBias;
+    }
+
+    public NeuralNetworkMathFunctions getMathFunctions() {
+        return mathFunctions;
+    }
+
+    public void setMathFunctions(NeuralNetworkMathFunctions mathFunctions) {
+        this.mathFunctions = mathFunctions;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public String toString(){
+        for (int i = 0; i < neuralNetwork.size(); i++) {
+            for (int j = 0; j < neuralNetwork.get(i).getNumberOfNeurons(); j++) {
+                neuralNetwork.get(i).getNeuron(j).setName(i + "-" + j);
+            }
+        }
+
+        String out  = "";
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            out += mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+
+        return out;
+    }
+
+    public static NeuralNetwork fromString(String s) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(s, NeuralNetwork.class);
+    }
+
+
 
 }

@@ -28,6 +28,8 @@ public class Testing {
             System.out.println(Arrays.toString(network.predict(new Double[]{0.2, 0.2})));
             System.out.println(Arrays.toString(network.predict(new Double[]{0.3, 0.4})));
             System.out.println(Arrays.toString(network.predict(new Double[]{0.3, 0.2})));
+            System.out.println(network);
+
         } catch (Exception e){
             e.printStackTrace();
         }
