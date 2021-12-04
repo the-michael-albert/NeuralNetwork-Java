@@ -23,8 +23,15 @@ public class NeuralNetwork{
     private NeuralNetworkMathFunctions mathFunctions = new NeuralNetworkMathFunctions();
     private boolean isConnected = false;
 
+    /**
+     * Constructor for creating a neural network for filling in (JSON)
+     */
     public NeuralNetwork(){}
 
+    /**
+     * creates a neural network with
+     * @param networkSize the array formatted as {INPUT, MIDDLE ... , OUTPUT}
+     */
     public NeuralNetwork(int[] networkSize){
         for (int i = 0; i < networkSize.length; i++) {
             //add network layer
@@ -45,6 +52,11 @@ public class NeuralNetwork{
         }
     }
 
+    /**
+     * Connects neurons randomly using random values between min and max
+     * @param min min weight for a connection
+     * @param max max weight for a connection
+     */
     public void connectNeuralNetworkRandomly(Double min, Double max) {
         for (int i = 1; i < neuralNetwork.size(); i++) {
             neuralNetworkBias.set(i - 1, mathFunctions.getRandomDouble(min,max));
@@ -58,10 +70,19 @@ public class NeuralNetwork{
         this.setConnected(true);
     }
 
+    /**
+     * calls the connection method using preset values
+     */
     public void connectNeuralNetworkRandomly() {
         this.connectNeuralNetworkRandomly(-0.8,0.8);
     }
 
+    /**
+     * Predict an output for after training
+     * @param input the input that we are trying to predict
+     * @return an output prediction that matches the training set
+     * @throws Exception thrown if we have an error in the Neural Network
+     */
     public Double[] predict(Double[] input) throws Exception {
         if(input.length == neuralNetwork.get(0).getNumberOfNeurons()){
             if(this.isNetworkReady()){
@@ -99,12 +120,23 @@ public class NeuralNetwork{
         }
     }
 
+    /**
+     * trains the neural network off of an input and output
+     * @param input the input array we want to train it off of
+     * @param target the output array we would like it to generate
+     * @param learningRate the multiplier for the weight correction delta
+     * @throws Exception Any Neural Network exceptions that arise
+     */
     public void trainNeuralNetwork(Double[] input, Double[] target, Double learningRate) throws Exception {
         predict(input);
         calculateError(target);
         addDeltaToWeights(learningRate);
     }
 
+    /**
+     * calculates error based on output values and the expected output
+     * @param target the expected output values
+     */
     private void calculateError(Double[] target){
         for (int layer = neuralNetwork.size() - 1; layer >= 0; layer--) {
             if (layer == neuralNetwork.size() - 1){
@@ -136,6 +168,10 @@ public class NeuralNetwork{
         }
     }
 
+    /**
+     * adds a delta to the connections
+     * @param learningRate learning (weight delta multiplier)
+     */
     private void addDeltaToWeights(double learningRate){
         for (int layer = 1; layer < neuralNetwork.size(); layer++) {
             for (int neuron = 0; neuron < neuralNetwork.get(layer).getNumberOfNeurons(); neuron++) {
@@ -147,10 +183,18 @@ public class NeuralNetwork{
         }
     }
 
+    /**
+     * is the network connected?
+     * @param state connected or not
+     */
     private void setConnected(boolean state){
         this.isConnected = state;
     }
 
+    /**
+     * checks if network is ready to learn
+     * @return if neurons are connected and size is bigger than 1
+     */
     private boolean isNetworkReady(){
         if(isConnected && neuralNetwork.size() > 1){
             return true;
@@ -160,15 +204,27 @@ public class NeuralNetwork{
         }
     }
 
+    /**
+     * get size of network Layers array
+     * @return the size of network Layers array
+     */
     public int getNetworkLayerSize(){
         return neuralNetwork.size();
     }
 
+    /**
+     * placeholder for JSON Generation
+     * @param n ignored
+     */
     public void setNetworkLayerSize(int n){
         //do nothing
     }
 
-
+    /**
+     * gets size of a layer
+     * @param layer the layer index in network
+     * @return size of the layer
+     */
     public int getNumberOfNeurons(int layer){
         if(layer >= 0 && layer < getNetworkLayerSize()){
             return neuralNetwork.get(layer).getNumberOfNeurons();
@@ -178,6 +234,12 @@ public class NeuralNetwork{
         }
     }
 
+    /**
+     * calculated how many neurons a neuron is connected to
+     * @param layer the layer index in neuronLayers
+     * @param neuron the neuron index in Layer
+     * @return the number of connections the neuron posesses
+     */
     public int getNumberOfConnections(int layer, int neuron){
         if(layer >= 0 && layer < getNetworkLayerSize()){
             if(neuron >= 0 && neuron < getNumberOfNeurons(layer)){
@@ -187,46 +249,98 @@ public class NeuralNetwork{
         return 0;
     }
 
+    /**
+     * Sets activation function for a neuron
+     * @param layer the layer the neuron is in
+     * @param neuron the neurons position in layer
+     * @param function the function Constant from NeuralNetworkMathFunction
+     */
     public void setActivationFunction(int layer, int neuron, int function){
         neuralNetwork.get(layer).getNeuron(neuron).setActivationFunction(function);
     }
 
+    /**
+     * Sets the connection weight for a specific index
+     * @param layer the layer index in neural network
+     * @param neuron the neurons index
+     * @param connection the index of the neuron's connection
+     * @param connectionValue the weight of the connection
+     */
     public void setConnection(int layer, int neuron, int connection, double connectionValue){
         neuralNetwork.get(layer).getNeuron(neuron).setConnection(connection, connectionValue);
     }
 
+    /**
+     * returns the connection weight for a neuron
+     * @param layer the layer we are targeting
+     * @param neuron the neuron we are targeting
+     * @param connection the connection index of the neuron
+     * @return the connection weight as a double
+     */
     public Double getConnection(int layer, int neuron, int connection){
         return neuralNetwork.get(layer).getNeuron(neuron).getConnection(connection);
     }
 
+    /**
+     * returns the neural network arrayList (for JSON)
+     * @return the Arraylist passed through ref.
+     */
     public ArrayList<Layer> getNeuralNetwork() {
         return neuralNetwork;
     }
 
+    /**
+     * sets the neural network (for JSON)
+     * @param neuralNetwork the network we are setting it to
+     */
     public void setNeuralNetwork(ArrayList<Layer> neuralNetwork) {
         this.neuralNetwork = neuralNetwork;
     }
 
+    /**
+     * get the biases for the neural network
+     * @return the arraylist of biases
+     */
     public ArrayList<Double> getNeuralNetworkBias() {
         return neuralNetworkBias;
     }
 
+    /**
+     * placeholder for JSON Generation
+     * @param neuralNetworkBias ignored
+     */
     public void setNeuralNetworkBias(ArrayList<Double> neuralNetworkBias) {
         this.neuralNetworkBias = neuralNetworkBias;
     }
 
+    /**
+     * get the Math Function we are using
+     * @return a copy of the math function
+     */
     public NeuralNetworkMathFunctions getMathFunctions() {
         return mathFunctions;
     }
 
+    /**
+     * sets the Neural Network Math Functions (for JSON)
+     * @param mathFunctions the Neural Network Math Functions we are setting it to
+     */
     public void setMathFunctions(NeuralNetworkMathFunctions mathFunctions) {
         this.mathFunctions = mathFunctions;
     }
 
+    /**
+     * is the network connected
+     * @return  whether the network is connected or not
+     */
     public boolean isConnected() {
         return isConnected;
     }
 
+    /**
+     * exports the network to a JSON String
+     * @return a String in Json format with all of the instance variable
+     */
     public String toString(){
         for (int i = 0; i < neuralNetwork.size(); i++) {
             for (int j = 0; j < neuralNetwork.get(i).getNumberOfNeurons(); j++) {
@@ -246,6 +360,12 @@ public class NeuralNetwork{
         return out;
     }
 
+    /**
+     * Generated a NeuralNetwork Object from a JSON String
+     * @param s the JSON String
+     * @return the Neural Network Object
+     * @throws JsonProcessingException Error in case the JSON String is incorrectly Formatted.
+     */
     public static NeuralNetwork fromString(String s) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(s, NeuralNetwork.class);

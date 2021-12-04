@@ -26,41 +26,76 @@ public class Neuron {
     private Double error = null;
 
 
-
-
-
+    /**
+     * sets the value of the neuron
+     * @param value the value of the neuron
+     */
     public void setValue(Double value){
         this.value = value;
     }
 
+    /**
+     * get Neuron Value
+     * @return the Neurons output
+     */
     public Double getValue(){
         return this.value;
     }
 
+    /**
+     * puts a connection in the connections array
+     * @param value the value we are placing as a weight
+     */
     public void addConnection(Double value){
         connections.add(value);
     }
 
+    /**
+     * overwrites a connection
+     * @param index the index of the weight we want to overwrite
+     * @param value the new weight
+     */
     public void setConnection(int index, Double value){
         connections.set(index, value);
     }
 
+    /**
+     * the new activation function for this method
+     * @param activationFunction the Activation function constant from the NeuralNetworkMathFunctions class
+     */
     public void setActivationFunction(int activationFunction){
         this.activationFunction = activationFunction;
     }
 
+    /**
+     * get the activation function key
+     * @return the Activation Function Constant
+     */
     public int getActivationFunction(){
         return this.activationFunction;
     }
 
+    /**
+     * set the error value for the Neuron
+     * @param error the error double
+     */
     public void setError(Double error){
         this.error = error;
     }
 
+    /**
+     * get the error value for this neuron
+     * @return the error as a double
+     */
     public Double getError() {
         return this.error;
     }
 
+    /**
+     * gets a double from the connection weight array
+     * @param index the location in the connection array
+     * @return the weight
+     */
     public Double getConnection(int index){
         if(index >= 0 && index < connections.size()){
             return connections.get(index);
@@ -70,33 +105,60 @@ public class Neuron {
         }
     }
 
+    /**
+     * get how many connections there are
+     * @return the number of connections in the weight list
+     */
     public int getNumberOfConnections(){
         return connections.size();
     }
 
+    /**
+     * set number of connections (for JSON)
+     * @param n the number of connections
+     */
     public void setNumberOfConnections(int n){
         //do nothing
     }
 
-
+    /**
+     * gets the name of the neuron
+     * @return Neuron's name String
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * sets the name of the Neuron
+     * @param name the neuron name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
     //EXPORTING METHODS
+
+    /**
+     * get the Connections array (weights)
+     * @return Arraylist of Connections and Weights
+     */
     public ArrayList<Double> getConnections(){
         return connections;
     }
 
-
+    /**
+     * gets Hashcode (for JSON)
+     * @return the Hashcode calculated based on instance variables
+     */
     public int getHashCode(){
         return hashCode();
     }
 
+    /**
+     * sets a hashcode (for JSON)
+     * @param hashcode ignored
+     */
     public void setHashCode(int hashcode) {
         //do nothing
     }
@@ -139,6 +201,12 @@ public class Neuron {
         return "";
     }
 
+    /**
+     * generates a neuron from a string
+     * @param s the JSON String
+     * @return a neuron Object
+     * @throws JsonProcessingException Just in case the neuron does not import correctly
+     */
     public static Neuron fromString(String s) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Neuron n = mapper.readValue(s, Neuron.class );
